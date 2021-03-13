@@ -1,7 +1,51 @@
-def x =  close;
-def y = close[-1];
-def z =  open(period = aggregationPeriod.DAY);
-plot priceline = HighestAll(if IsNaN(y) and !IsNaN(x) then x else Double.NaN);
-priceline.SetPaintingStrategy(PaintingStrategy.DASHES);
-priceline.SetDefaultColor(Color.grAY);
-priceline.assignvalueColor(if (x>= z)then color.darK_GREEN else color.yellOW);
+#hint: plot the premarket <br> high and low for <br>the day
+input PlotOverNightExtremes = yes;
+def h = high;
+def l = low;
+def bar = BarNumber();
+def GlobeX = GetTime() < RegularTradingStart(GetYYYYMMDD());
+def ONhigh = if GlobeX and !GlobeX[1]
+             then h
+             else if GlobeX and
+                     h > ONhigh[1]
+                  then h
+                  else ONhigh[1];
+def ONhighBar = if GlobeX and h == ONhigh
+                then bar
+                else Double.NaN;
+def ONlow = if GlobeX and !GlobeX[1]
+            then l
+            else if GlobeX and 
+                    l < ONlow[1]
+                 then l
+                 else ONlow[1];
+def ONlowBar = if GlobeX and l == ONlow
+               then bar
+               else Double.NaN;
+def OverNightHigh = if BarNumber() == HighestAll(ONhighBar) 
+                    then ONhigh
+                    else OverNightHigh[1];
+def OverNightLow = if BarNumber() == HighestAll(ONlowBar) 
+                   then ONlow
+                   else OverNightLow[1];
+plot ONH = if OverNightHigh > 0
+           then OverNightHigh
+           else Double.NaN;
+ONH.SetHiding(!PlotOverNightExtremes);
+ONH.SetPaintingStrategy(PaintingStrategy.DASHES);
+ONH.SetDefaultColor(Color.LIGHT_GREEN);
+ONH.HideBubble();
+ONH.HideTitle();
+plot ONL = if OverNightLow > 0
+           then OverNightLow
+           else Double.NaN;
+ONL.SetHiding(!PlotOverNightExtremes);
+ONL.SetPaintingStrategy(PaintingStrategy.DASHES);
+ONL.SetDefaultColor(Color.LIGHT_ORANGE);
+ONL.HideBubble();
+ONL.HideTitle();
+#AddLabel(GlobeX, "GlobeX Range = " + AsDollars(ONH - ONL), color.white);
+#AddChartBubble(bar == ONhighBar and PlotOverNightExtremes, ONH, "ONH", Color.Green);
+#AddChartBubble(bar == ONlowBar and PlotOverNightExtremes, ONL, "ONL", Color.light_ORANGE, 0);
+Alert((close crosses above ONH), "", Alert.BAR, Sound.Bell);
+Alert((close crosses below ONL), "", Alert.BAR, Sound.Ding);
