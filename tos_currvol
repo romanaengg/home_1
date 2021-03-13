@@ -1,0 +1,26 @@
+
+ 
+declare lower;
+
+#Inputs 
+
+input UnusualVolumePercent = 200;
+input Show30BarAvg = yes;
+input ShowCurrentBar = yes;
+input ShowPercentOf30BarAvg  = Yes;
+input showtradebuyper = yes;
+
+
+#def avg30Bars = VolumeAvg(30).VolAvg;
+def avg30Bars = (volume[1] + volume[2] + volume[3] + volume[4] + volume[5] + volume[6] + volume[7] + volume[8] + volume[9] + volume[10] + volume[11] + volume[12] + volume[13] + volume[14] + volume[15] + volume[16] + volume[17] + volume[18] + volume[19] + volume[20] + volume[21] + volume[22] + volume[23] + volume[24] + volume[25] + volume[26] + volume[27] + volume[28] + volume[29] + volume[30]) / 30;
+def curVolume = volume;
+def percentof30bar = Round((curVolume / avg30Bars) * 100, 0);
+
+
+# Labels
+
+#AddLabel(Show30BarAvg, "Avg 30 Bars: " + Round(avg30Bars, 0), Color.LIGHT_GRAY);
+AddLabel(ShowCurrentBar, "Cur Bar: " + curVolume, (if curVolume >= avg30Bars then Color.light_GREEN else Color.light_GRAY));
+AddLabel(ShowPercentOf30BarAvg, percentof30bar + "%", (if percentof30bar >= UnusualVolumePercent then Color.light_GREEN else if percentof30bar >= 100 then Color.ORANGE else Color.WHITE) );
+
+
