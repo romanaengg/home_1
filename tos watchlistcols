@@ -1,0 +1,143 @@
+# %chg from open 
+def Red2Green = if open*.98>low then 1 else 0;
+def openchg = ((close/open)-1)*100;
+plot x=openchg;
+x.assignValueColor(if x<0 then Color.light_red else color.green);
+assignbackgroundcolor(
+     if close>open and Red2Green == 1  
+          then color.dark_green
+          else 
+            (if(close between open*.99 and open*1.02)and open*.97>low
+               then color.dark_orange         
+                else color.current)
+);
+
+
+#Earning date
+def PE = GetEventOffset(Events.EARNINGS, -1);
+def NE = GetEventOffset(Events.EARNINGS, 0);
+def z = if PE <= 5 then PE else NE;
+# get the earnings date
+def eDay = GetValue(GetDayOfMonth(GetYYYYMMDD()), z);
+def eMonth = GetValue(GetMonth(), z);
+
+AddLabel(yes, (if eMonth  < 10 then "0" else "") + eMonth + " / " +
+              (if eDay < 10 then "0" else "") + eDay,
+        if z <= 0 then Color.CYAN else Color.CURRENT);
+        
+        
+        
+#OI change
+        plot OI_NetChg =open_interest()-open_interest()[1]; 
+
+
+#range pos
+def range =high-low;
+def position =close -low;
+plot x = round (100*(position/range),0);
+#assign font color
+
+x.assignValueColor(
+if X < 50
+        then 
+        (if (x between 30 and 50)
+            then color.lighT_ORANGE
+            else (if (x between 20 and 30)
+                    then color.pink
+                    else    
+                        (if (x between 10 and 20)
+                            then color.light_RED
+                            else color.green) ))
+         else 
+            (if (x between 50 and 75)   
+                then color.light_GREEN
+             else        
+                (if (x between 75 and 90)
+                    then color.green
+                    else color.yellow)
+             )
+);
+
+
+#assign background color 
+assignbackgroundColor (
+if (x between 90 and 100) 
+    then (if (x between 98 and 100)
+        then color.magenta
+        else color.plum)
+else 
+    (if (x between 60 and 70)
+        then 
+            (if (x between 60 and 64)
+                    then color.GRAY
+                    else color.dark_gray)
+
+        else 
+            (if (x between 40 and 60)
+                Then createColor (100,100,25)
+                else color.current)
+
+)
+
+);
+     
+     
+     
+  #VWAP
+  
+  def range =high-low;
+def position =close -low;
+plot x = round (100*(position/range),0);
+#assign font color
+
+x.assignValueColor(
+if X < 50
+        then 
+        (if (x between 30 and 50)
+            then color.lighT_ORANGE
+            else (if (x between 20 and 30)
+                    then color.pink
+                    else    
+                        (if (x between 10 and 20)
+                            then color.light_RED
+                            else color.green) ))
+         else 
+            (if (x between 50 and 75)   
+                then color.light_GREEN
+             else        
+                (if (x between 75 and 90)
+                    then color.green
+                    else color.yellow)
+             )
+);
+
+
+#assign background color 
+assignbackgroundColor (
+if (x between 90 and 100) 
+    then (if (x between 98 and 100)
+        then color.magenta
+        else color.plum)
+else 
+    (if (x between 60 and 70)
+        then 
+            (if (x between 60 and 64)
+                    then color.GRAY
+                    else color.dark_gray)
+
+        else 
+            (if (x between 40 and 60)
+                Then createColor (100,100,25)
+                else color.current)
+
+)
+
+);
+
+
+
+
+     
+     
+     
+
