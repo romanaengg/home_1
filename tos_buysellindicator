@@ -1,0 +1,20 @@
+def SMA10= simplemovingAvg(close,10);
+def SMA30= simplemovingAvg(close,30);
+def SMA100=  simplemovingAvg(close,100);
+
+def stosloK = stochasticSlow(80,20,21,3).slowK;
+def stosloD = stochasticSlow(80,20,21,3).slowD;
+def stosloOB = stochasticSlow(80,20,21,3).overBought;
+def stosloOS= stochasticSlow(80,20,21,3).oversold;
+
+def MH=macdHistogram();
+
+plot bullish =if (close >sma10 and close[1] <=SMA10[1]) and  (close>sma100) and stosloK<stosloOB and stosloD < stosloOB   and mh>0 then 1 else 0;
+
+plot bearish =if (close <sma10 and close[1] >=SMA10[1]) and  (close<sma100) and stosloK>stosloOS and stosloD > stosloOS  and MH <0 then 1 else 0;
+
+bullish.setPaintingStrategy(paintingStrategy.BOOLEAN_ARROW_UP);
+bearish.setPaintingStrategy(paintingStrategy.BOOLEAN_ARROW_DOWN);
+
+bullish.setLineWeight(5);
+bearish.setLineWeight(5);
