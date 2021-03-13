@@ -1,0 +1,24 @@
+input daysBefore = 5;
+input daysAfter = 5;
+
+input showLines = yes;
+input paintBackground = yes;
+
+DefineGlobalColor("Before Earnings", Color.GREEN);
+DefineGlobalColor("Earnings Release Date", Color.YELLOW);
+DefineGlobalColor("After Earnings", Color.CYAN);
+DefineGlobalColor("Fill Before", CreateColor(178, 216, 166));
+DefineGlobalColor("Fill After", CreateColor(131, 191, 213));
+
+AddVerticalLine(showLines and HasEarnings(), "Earnings!", GlobalColor("Earnings Release Date" ), Curve.FIRM);
+
+def before = Sum(HasEarnings(), daysBefore)[-daysBefore];
+def after = Sum(HasEarnings(), daysAfter)[1];
+
+
+def value1 = HighestAll(high);
+def value2 = if paintBackground and before then LowestAll(low) else Double.NaN;
+def value3 = if paintBackground and after then LowestAll(low) else Double.NaN;
+
+AddCloud(value1, value2, GlobalColor("Fill Before" ));
+AddCloud(value1, value3, GlobalColor("Fill After" ));
