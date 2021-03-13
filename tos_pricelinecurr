@@ -1,0 +1,7 @@
+def x =  close;
+def y = close[-1];
+def z =  open(period = aggregationPeriod.DAY);
+plot priceline = HighestAll(if IsNaN(y) and !IsNaN(x) then x else Double.NaN);
+priceline.SetPaintingStrategy(PaintingStrategy.DASHES);
+priceline.SetDefaultColor(Color.grAY);
+priceline.assignvalueColor(if (x>= z)then color.darK_GREEN else color.yellOW);
