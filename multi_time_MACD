@@ -1,0 +1,86 @@
+declare lower;
+def fastLength = 12;
+def slowLength = 26;
+def MACDLength = 9;
+def averageType = AverageType.EXPONENTIAL;
+def c1;
+def c2;
+def c3;
+def c4;
+
+plot x=2.5;
+x.setStyle(curve.SHORT_DASH);
+plot y=0;
+y.setStyle(curve.SHORT_DASH);
+if getAggregationPeriod() == aggregationPeriod.FIVE_MIN  {
+    c1=close(period =aggregationPeriod.FIVE_MIN);
+    c2=close(period =aggregationPeriod.TEN_MIN);
+    C3= close(period =aggregationPeriod.fifTEEN_MIN);
+    c4=close(period =aggregationPeriod.HOUR);}
+     else
+    if getAggregationPeriod() == aggregationPeriod.fIFTEEN_MIN  {
+    c1=close(period =aggregationPeriod.fifTEEN_MIN);
+    c2=close(period =aggregationPeriod.thirTY_MIN);
+    C3= close(period =aggregationPeriod.houR);
+    c4=close(period =aggregationPeriod.DAY);}
+    else
+    if getAggregationPeriod() == aggregationPeriod.houR  {
+    c1=close(period =aggregationPeriod.HOUR);
+    c2=close(period =aggregationPeriod.FOUr_HOURS);
+    C3= close(period =aggregationPeriod.DAY);
+    c4=close(period =aggregationPeriod.WeeK);}
+    else
+    if getAggregationPeriod() == aggregationPeriod.DAY  {
+    c1=close(period =aggregationPeriod.DAY);
+    c2=close(period =aggregationPeriod.TWO_DAYS);
+    C3= close(period =aggregationPeriod.thREE_DAYS);
+    c4=close(period =aggregationPeriod.WeeK);}
+    else{
+    c1=0;
+    c2=0;
+    c3=0;
+    c4=0;}
+
+def Value1 = MovingAverage(averageType, c1, fastLength) - MovingAverage(averageType, c1, slowLength);
+def Avg1 = MovingAverage(averageType, Value1, MACDLength);
+def cond1bull = value1>0 and Value1>avg1;
+def cond1bear = value1<0 and Value1<avg1;
+def Value2 = MovingAverage(averageType, c2, fastLength) - MovingAverage(averageType, c2, slowLength);
+def Avg2 = MovingAverage(averageType, Value2, MACDLength);
+def cond2bull = value2>0 and Value2>avg2;
+def cond2bear = value2<0 and Value2<avg2;
+def Value3 = MovingAverage(averageType, c3, fastLength) - MovingAverage(averageType, c3, slowLength);
+def Avg3 = MovingAverage(averageType, Value3, MACDLength);
+def cond3bull = value3>0 and Value3>avg3;
+def cond3bear = value3<0 and Value3<avg3;
+def Value4 = MovingAverage(averageType, c4, fastLength) - MovingAverage(averageType, c4, slowLength);
+def Avg4 = MovingAverage(averageType, Value4, MACDLength);
+def cond4bull = value4>0 and Value4>avg4;
+def cond4bear = value4<0 and Value4<avg4;
+
+#current time frame 
+plot curr_time = if cond1bear or cond1bull then 2 else  double.NaN;
+curr_time.SetStyle(Curve.POINTS);
+curr_time.assignValueColor(if cond1bull then color.green else color.yellow );
+
+#first higher time frame
+plot first_high_time = if cond2bull or cond2bear then 1.5 else  double.NaN;
+first_high_time.assignValueColor(if cond2bull then color.green else color.yellow );
+first_high_time.SetStyle(Curve.POINTS);
+
+#2nd high
+plot second_high_time = if cond3bull or cond3bear then 1 else  double.NaN;
+second_high_time.assignValueColor(if cond3bull then color.green else color.yellow );
+second_high_time.SetStyle(Curve.POINTS);
+
+#3rd high
+plot third_high_time = if cond4bull or cond4bear then 0.5 else  double.NaN;
+third_high_time.assignValueColor(if cond4bull then color.green else color.yellow );
+third_high_time.SetStyle(Curve.POINTS);
+def bull = cond1bull and cond2bull and cond3bull and cond4bull;
+def bear = cond1bear and cond2bear and cond3bear and cond4bear;
+plot sig = if bull or bear then 3 else double.Nan;
+sig.setStyle(curve.POINTS);
+sig.assignValueColor(if bull then color.GREEN else color.yellow);
+
+assignPriceColor(if bull then color.green else if bear then color.yellOW else color.GRAY);
